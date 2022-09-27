@@ -1,5 +1,7 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useContext} from 'react';
-import {View, Text, StyleSheet, Button} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
+import BlackButton from '../components/BlackButton';
 import {PermissionContext} from '../context/PermissionContext';
 
 const PermissionScreen = () => {
@@ -7,8 +9,10 @@ const PermissionScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text>Permisos</Text>
-      <Button title="Permiso" onPress={askLocationPermission} />
+      <Text style={{marginBottom: 20, fontSize: 20}}>
+        Es necesario el uso del GPS
+      </Text>
+      <BlackButton title="Permiso" onPress={askLocationPermission} />
       <Text>{JSON.stringify(permissions, null, 5)}</Text>
     </View>
   );
