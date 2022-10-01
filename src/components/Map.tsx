@@ -1,19 +1,28 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps'; // remove PROVIDER_GOOGLE import if not using Google Maps
+import UseLocation from '../hooks/UseLocation';
+import LoadingScreen from '../Screens/LoadingScreen';
 
 interface Props {
   markers?: Marker[];
 }
 
 const Map = ({markers}: Props) => {
+  const {hasLocation, initialPosition} = UseLocation();
+
+  if (!hasLocation) {
+    return <LoadingScreen />;
+  }
   return (
     <>
       <MapView
         style={{flex: 1}}
+        showsUserLocation
         provider={PROVIDER_GOOGLE} // remove if not using Google Maps
         region={{
-          latitude: 37.78825,
-          longitude: -122.4324,
+          latitude: initialPosition.latitude,
+          longitude: initialPosition.longitude,
           latitudeDelta: 0.015,
           longitudeDelta: 0.0121,
         }}>
