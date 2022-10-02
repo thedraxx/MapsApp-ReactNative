@@ -3,6 +3,7 @@ import React from 'react';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps'; // remove PROVIDER_GOOGLE import if not using Google Maps
 import UseLocation from '../hooks/UseLocation';
 import LoadingScreen from '../Screens/LoadingScreen';
+import Fab from './Fab';
 
 interface Props {
   markers?: Marker[];
@@ -36,6 +37,15 @@ const Map = ({markers}: Props) => {
           description={'This is a description of the marker'}
         /> */}
       </MapView>
+      <Fab
+        iconName="star-outline"
+        onPress={() => console.log('hola fab')}
+        style={{
+          position: 'absolute',
+          bottom: 20,
+          right: 20,
+        }}
+      />
     </>
   );
 };
