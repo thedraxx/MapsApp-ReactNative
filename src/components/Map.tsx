@@ -1,15 +1,19 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {useEffect, useRef} from 'react';
-import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps'; // remove PROVIDER_GOOGLE import if not using Google Maps
+import MapView, {PROVIDER_GOOGLE, Marker, Polyline} from 'react-native-maps'; // remove PROVIDER_GOOGLE import if not using Google Maps
 import UseLocation from '../hooks/UseLocation';
 import LoadingScreen from '../Screens/LoadingScreen';
 import Fab from './Fab';
+import {useState} from 'react';
 
 interface Props {
-  markers?: Marker[];
+  markers?: typeof Marker[];
 }
 
 const Map = ({markers}: Props) => {
+  const [showPolyline, setShowPolyline] = useState<boolean>(true);
+
   const {
     hasLocation,
     initialPosition,
@@ -17,6 +21,7 @@ const Map = ({markers}: Props) => {
     FollowUserLocation,
     CurrentUserLocation,
     StopFollowUserLocation,
+    routeLines,
   } = UseLocation();
 
   useEffect(() => {
@@ -72,6 +77,13 @@ const Map = ({markers}: Props) => {
           longitudeDelta: 0.0121,
         }}
         onTouchStart={() => (following.current = false)}>
+        {showPolyline && (
+          <Polyline
+            coordinates={routeLines}
+            strokeColor={'black'}
+            strokeWidth={3}
+          />
+        )}
         {/* <Marker
           image={require('../assets/images/custom-marker.png')}
           coordinate={{
@@ -89,6 +101,16 @@ const Map = ({markers}: Props) => {
           position: 'absolute',
           bottom: 20,
           right: 20,
+        }}
+      />
+
+      <Fab
+        iconName="brush-outline"
+        onPress={() => setShowPolyline(!showPolyline)}
+        style={{
+          position: 'absolute',
+          bottom: 20,
+          left: 20,
         }}
       />
     </>
