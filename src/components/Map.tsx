@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps'; // remove PROVIDER_GOOGLE import if not using Google Maps
 import UseLocation from '../hooks/UseLocation';
 import LoadingScreen from '../Screens/LoadingScreen';
@@ -10,7 +10,43 @@ interface Props {
 }
 
 const Map = ({markers}: Props) => {
-  const {hasLocation, initialPosition} = UseLocation();
+  const {
+    hasLocation,
+    initialPosition,
+    GetCurrentLocation,
+    FollowUserLocation,
+    CurrentUserLocation,
+  } = UseLocation();
+
+  useEffect(() => {
+    FollowUserLocation();
+    return () => {
+      // TODO cancelar el follow
+    };
+  }, []);
+
+  useEffect(() => {
+    const latitude = CurrentUserLocation.latitude;
+    const longitude = CurrentUserLocation.longitude;
+    mapViewRef.current?.animateCamera({
+      center: {
+        latitude: latitude,
+        longitude: longitude,
+      },
+    });
+  }, [CurrentUserLocation]);
+
+  const mapViewRef = useRef<MapView>();
+
+  const centerPosition = async () => {
+    const location = await GetCurrentLocation();
+    mapViewRef.current?.animateCamera({
+      center: {
+        latitude: location.latitude,
+        longitude: location.longitude,
+      },
+    });
+  };
 
   if (!hasLocation) {
     return <LoadingScreen />;
@@ -18,6 +54,7 @@ const Map = ({markers}: Props) => {
   return (
     <>
       <MapView
+        ref={el => (mapViewRef.current = el!)}
         style={{flex: 1}}
         showsUserLocation
         provider={PROVIDER_GOOGLE} // remove if not using Google Maps
@@ -38,8 +75,8 @@ const Map = ({markers}: Props) => {
         /> */}
       </MapView>
       <Fab
-        iconName="star-outline"
-        onPress={() => console.log('hola fab')}
+        iconName="compass-outline"
+        onPress={centerPosition}
         style={{
           position: 'absolute',
           bottom: 20,
